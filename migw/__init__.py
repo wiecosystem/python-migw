@@ -229,6 +229,7 @@ class gateway:
 
     def send_cmd(self, cmd, params = None, expect_result = False):
         self.logger.debug(f'sending cmd {cmd} (params={params})')
+        data = {}
 
         if params:
             encoded = self.msg_encode({'method': cmd, 'params': params})
@@ -278,7 +279,7 @@ class gateway:
             while not self.queue.empty():
                 req = self.queue.get()
                 res = self.send_cmd(req['cmd'], req.get('params'), req.get('expect_result', False))
-                if res['cmd'] == 'internal.PING' and res['result'] == 'online':
+                if req['cmd'] == 'internal.PING' and res.get('result') == 'online':
                     self.pong()
 
             # Receive messages
